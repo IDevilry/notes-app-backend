@@ -18,4 +18,6 @@ API для приложения работы с заметками
 - Mutation
     - New note
     - Delete note
+    - Sign Up
+    - Sing In
 
