@@ -29,8 +29,8 @@ export const Mutation = {
       }
     );
   },
-  deleteNote: async (_, args) => {
-    return await models.Note.findByIdAndDelete(args.id);
+  deleteNote: async (_, { id }) => {
+    return await models.Note.findByIdAndDelete(id);
   },
   signUp: async (_, { username, email, password }) => {
     const hashedPass = await bcrypt.hash(password, 10);
