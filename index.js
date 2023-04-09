@@ -16,10 +16,6 @@ const PORT = process.env.PORT || 4000;
 
 const app = express();
 
-// app.use(helmet());
-// app.use(cors());
-app.use(express.json());
-
 const server = new ApolloServer({
   typeDefs,
   resolvers,
@@ -31,6 +27,10 @@ const server = new ApolloServer({
 
 await server.start();
 server.applyMiddleware({ app, path: "/api" });
+
+app.use(helmet());
+app.use(cors());
+app.use(express.json());
 
 await mongoose.connect(DB_HOST);
 

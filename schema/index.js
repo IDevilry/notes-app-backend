@@ -6,6 +6,7 @@ export const typeDefs = gql`
     notes: [Note!]!
     note(id: ID!): Note!
     user(username: String!): User!
+    users: [User!]!
   }
 
   type Note {
@@ -21,7 +22,7 @@ export const typeDefs = gql`
     id: ID!
     username: String!
     email: String!
-    notes: [Note!]!
+    notes: [Note!]
     createdAt: DateTime!
     updatedAt: DateTime!
   }

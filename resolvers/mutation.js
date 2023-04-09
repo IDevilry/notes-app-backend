@@ -1,9 +1,10 @@
-import { models } from "../models/index.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
-import { AuthenticationError, ForbiddenError } from "apollo-server-express";
-import * as dotenv from "dotenv";
 import mongoose from "mongoose";
+import * as dotenv from "dotenv";
+
+import { AuthenticationError, ForbiddenError } from "apollo-server-express";
+import { models } from "../models/index.js";
 
 dotenv.config();
 
