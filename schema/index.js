@@ -5,6 +5,7 @@ export const typeDefs = gql`
   type Query {
     notes: [Note!]!
     note(id: ID!): Note!
+    user(username: String!): User!
   }
 
   type Note {
@@ -29,7 +30,7 @@ export const typeDefs = gql`
     newNote(content: String!, title: String!): Note!
     updateNote(id: ID!, content: String!, title: String!): Note!
     deleteNote(id: ID!): Note!
-    signUp(username: String!, email: String!, password: String!) : String!
-    signIn(username: String, email: String!, password: String!) : String!
+    signUp(username: String!, email: String!, password: String!): String!
+    signIn(username: String, email: String!, password: String!): String!
   }
 `;
