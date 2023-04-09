@@ -2,10 +2,11 @@ import { gql } from "apollo-server-express";
 
 export const typeDefs = gql`
   scalar DateTime
+
   type Query {
     notes: [Note!]!
-    note(id: ID!): Note!
-    user(username: String!): User!
+    note(id: ID): Note!
+    user(username: String!): User
     users: [User!]!
   }
 
@@ -22,7 +23,7 @@ export const typeDefs = gql`
     id: ID!
     username: String!
     email: String!
-    notes: [Note!]
+    notes: [Note!]!
     createdAt: DateTime!
     updatedAt: DateTime!
   }

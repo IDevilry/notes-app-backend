@@ -4,6 +4,7 @@ import helmet from "helmet";
 import cors from "cors";
 import * as dotenv from "dotenv";
 
+import { models } from "./models/index.js";
 import { ApolloServer } from "apollo-server-express";
 import { typeDefs } from "./schema/index.js";
 import { resolvers } from "./resolvers/index.js";
@@ -21,7 +22,7 @@ const server = new ApolloServer({
   resolvers,
   context: ({ req }) => {
     const user = verifyToken(req);
-    return { user };
+    return { user, models };
   },
 });
 

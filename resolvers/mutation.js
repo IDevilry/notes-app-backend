@@ -4,16 +4,15 @@ import mongoose from "mongoose";
 import * as dotenv from "dotenv";
 
 import { AuthenticationError, ForbiddenError } from "apollo-server-express";
-import { models } from "../models/index.js";
 
 dotenv.config();
 
 const JWT_KEY = process.env.JWT_SECRET_KEY;
 
 export const Mutation = {
-  newNote: async (_, { title, content }, { user }) => {
+  newNote: async (_, { title, content }, { user, models }) => {
     if (!user) {
-      throw new ForbiddenError("User not logged in");
+      throw new AuthenticationError("User not logged in");
     }
     return await models.Note.create({
       title: title,
@@ -21,9 +20,9 @@ export const Mutation = {
       author: new mongoose.Types.ObjectId(user.id),
     });
   },
-  updateNote: async (_, { id, title, content }, { user }) => {
+  updateNote: async (_, { id, title, content }, { user, models }) => {
     if (!user) {
-      throw new ForbiddenError("User not logged in");
+      throw new AuthenticationError("User not logged in");
     }
     return await models.Note.findByIdAndUpdate(
       id,
@@ -38,13 +37,13 @@ export const Mutation = {
       }
     );
   },
-  deleteNote: async (_, { id }, { user }) => {
+  deleteNote: async (_, { id }, { user, models }) => {
     if (!user) {
-      throw new ForbiddenError("User not logged in");
+      throw new AuthenticationError("User not logged in");
     }
     return await models.Note.findByIdAndDelete(id);
   },
-  signUp: async (_, { username, email, password }) => {
+  signUp: async (_, { username, email, password }, { models }) => {
     const hashedPass = await bcrypt.hash(password, 10);
     try {
       const user = await models.User.create({
@@ -57,7 +56,7 @@ export const Mutation = {
       throw new Error("Error registering user");
     }
   },
-  signIn: async (_, { username, email, password }) => {
+  signIn: async (_, { username, email, password }, { models }) => {
     const user = await models.User.findOne({
       $or: [{ email }, { username }],
     });
