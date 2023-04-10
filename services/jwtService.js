@@ -10,7 +10,7 @@ export const verifyToken = (req) => {
     return jwt.verify(
       req.headers.authorization.split(" ")[1],
       JWT_KEY,
-      (_, decoded) => {
+      (_,decoded) => {
         return decoded;
       }
     );

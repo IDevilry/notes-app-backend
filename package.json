@@ -5,10 +5,11 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
+    "start": "node index.js",
     "dev": "nodemon index.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "IDevilry",
   "license": "ISC",
   "dependencies": {
     "apollo-server-express": "^3.12.0",

@@ -27,13 +27,14 @@ const server = new ApolloServer({
 });
 
 await server.start();
+await mongoose.connect(DB_HOST);
+
 server.applyMiddleware({ app, path: "/api" });
 
 app.use(helmet());
 app.use(cors());
 app.use(express.json());
 
-await mongoose.connect(DB_HOST);
 
 app.listen(PORT, () => {
   console.log(
