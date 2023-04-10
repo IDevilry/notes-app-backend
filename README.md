@@ -1,5 +1,5 @@
 
-# notes-app-backend
+# notes-app-server
 
 API для приложения работы с заметками
 
