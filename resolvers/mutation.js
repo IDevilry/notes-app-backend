@@ -24,6 +24,10 @@ export const Mutation = {
     if (!user) {
       throw new AuthenticationError("User not logged in");
     }
+    const note = await models.Note.findById(id);
+    if (note && String(note.author !== user.id)) {
+      throw new ForbiddenError("You don't have permission to edit this note");
+    }
     return await models.Note.findByIdAndUpdate(
       id,
       {
@@ -41,7 +45,49 @@ export const Mutation = {
     if (!user) {
       throw new AuthenticationError("User not logged in");
     }
+    const note = await models.Note.findById(id);
+    if (note && String(note.author !== user.id)) {
+      throw new ForbiddenError("You don't have permission to delete this note");
+    }
     return await models.Note.findByIdAndDelete(id);
+  },
+  toggleFavoriteNote: async (_, { id }, { user, models }) => {
+    if (!user) {
+      throw new AuthenticationError("User not logged in");
+    }
+    const findNote = await models.Note.findById(id);
+    const hasUser = findNote.favoritedBy.includes(user.id);
+    if (hasUser) {
+      return await models.Note.findByIdAndUpdate(
+        id,
+        {
+          $pull: {
+            favoritedBy: new mongoose.Types.ObjectId(user.id),
+          },
+          $inc: {
+            addedToFavoriteTimes: -1,
+          },
+        },
+        {
+          new: true,
+        }
+      );
+    } else {
+      return await models.Note.findByIdAndUpdate(
+        id,
+        {
+          $push: {
+            favoritedBy: new mongoose.Types.ObjectId(user.id),
+          },
+          $inc: {
+            addedToFavoriteTimes: 1,
+          },
+        },
+        {
+          new: true,
+        }
+      );
+    }
   },
   signUp: async (_, { username, email, password }, { models }) => {
     const hashedPass = await bcrypt.hash(password, 10);

@@ -15,6 +15,8 @@ export const typeDefs = gql`
     title: String!
     content: String!
     author: User!
+    addedToFavoriteTimes: Int!
+    favoritedBy: [User!]
     createdAt: DateTime!
     updatedAt: DateTime!
   }
@@ -24,6 +26,7 @@ export const typeDefs = gql`
     username: String!
     email: String!
     notes: [Note!]!
+    favoritesNotes: [Note!]
     createdAt: DateTime!
     updatedAt: DateTime!
   }
@@ -32,6 +35,7 @@ export const typeDefs = gql`
     newNote(content: String!, title: String!): Note!
     updateNote(id: ID!, content: String!, title: String!): Note!
     deleteNote(id: ID!): Note!
+    toggleFavoriteNote(id: ID!): Note!
     signUp(username: String!, email: String!, password: String!): String!
     signIn(username: String, email: String!, password: String!): String!
   }
