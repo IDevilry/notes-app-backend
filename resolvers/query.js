@@ -7,11 +7,17 @@ export const Query = {
   note: async (_, { id }, { models }) => {
     return await models.Note.findById(id);
   },
-  user: async (_, { username }, { models, user }) => {
+  user: async (_, args, { models, user }) => {
     if (!user) {
       throw new AuthenticationError("User not logged in");
     }
-    return await models.User.findOne({ username: username });
+    return await models.User.findById(user.id);
+  },
+  userById: async (_, { id }, { models, user }) => {
+    if (!user) {
+      throw new AuthenticationError("User not logged in");
+    }
+    return await models.User.findById(user.id);
   },
   users: async (_, args, { models, user }) => {
     if (!user) {
