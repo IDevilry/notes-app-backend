@@ -10,13 +10,14 @@ dotenv.config();
 const JWT_KEY = process.env.JWT_SECRET_KEY;
 
 export const Mutation = {
-  newNote: async (_, { title, content }, { user, models }) => {
+  newNote: async (_, { title, content, category }, { user, models }) => {
     if (!user) {
       throw new AuthenticationError("User not logged in");
     }
     return await models.Note.create({
       title: title,
       content: content,
+      category: category,
       author: new mongoose.Types.ObjectId(user.id),
     });
   },
@@ -46,7 +47,7 @@ export const Mutation = {
       throw new AuthenticationError("User not logged in");
     }
     const note = await models.Note.findById(id);
-    if (note && String(note.author !== user.id)) {
+    if (note && String(note.author) !== user.id) {
       throw new ForbiddenError("You don't have permission to delete this note");
     }
     return await models.Note.findByIdAndDelete(id);

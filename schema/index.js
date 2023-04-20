@@ -15,6 +15,7 @@ export const typeDefs = gql`
     id: ID!
     title: String!
     content: String!
+    category: String!
     author: User!
     addedToFavoriteTimes: Int!
     favoritedBy: [User!]
@@ -33,7 +34,7 @@ export const typeDefs = gql`
   }
 
   type Mutation {
-    newNote(content: String!, title: String!): Note!
+    newNote(content: String!, title: String!, category: String!): Note!
     updateNote(id: ID!, content: String!, title: String!): Note!
     deleteNote(id: ID!): Note!
     toggleFavoriteNote(id: ID!): Note!

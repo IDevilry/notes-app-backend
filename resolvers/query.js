@@ -17,7 +17,7 @@ export const Query = {
     if (!user) {
       throw new AuthenticationError("User not logged in");
     }
-    return await models.User.findById(user.id);
+    return await models.User.findById(id);
   },
   users: async (_, args, { models, user }) => {
     if (!user) {
