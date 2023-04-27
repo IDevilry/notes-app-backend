@@ -1,23 +1,28 @@
-import express from "express";
+import express, { Express } from "express";
 import mongoose from "mongoose";
 import helmet from "helmet";
 import cors from "cors";
 import * as dotenv from "dotenv";
 
-import { models } from "./models/index.js";
+import { models } from "./models";
 import { ApolloServer } from "apollo-server-express";
-import { typeDefs } from "./schema/index.js";
-import { resolvers } from "./resolvers/index.js";
-import { verifyToken } from "./services/index.js";
+import { typeDefs } from "./schema";
+import { resolvers } from "./resolvers";
+import { verifyToken } from "./services";
 
 dotenv.config();
 
 const DB_HOST = process.env.DB_HOST;
+
+if (!DB_HOST) {
+ throw new Error("set DB_HOST in .env file");
+}
+
 const PORT = process.env.PORT || 4000;
 
-const app = express();
+const app: Express = express();
 
-const server = new ApolloServer({
+const server: ApolloServer = new ApolloServer({
   typeDefs,
   resolvers,
   context: ({ req }) => {
@@ -26,15 +31,18 @@ const server = new ApolloServer({
   },
 });
 
-await server.start();
-await mongoose.connect(DB_HOST);
+const startApolloServer = async () => {
+  await server.start();
 
-server.applyMiddleware({ app, path: "/api" });
+  await mongoose.connect(DB_HOST);
+  server.applyMiddleware({ app, path: "/api" });
+};
+
+startApolloServer();
 
 app.use(helmet());
 app.use(cors());
 app.use(express.json());
-
 
 app.listen(PORT, () => {
   console.log(

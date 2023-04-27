@@ -4,13 +4,22 @@ import mongoose from "mongoose";
 import * as dotenv from "dotenv";
 
 import { AuthenticationError, ForbiddenError } from "apollo-server-express";
+import { ApolloContext, ApolloPayload, AuthPayload } from "../types";
 
 dotenv.config();
 
 const JWT_KEY = process.env.JWT_SECRET_KEY;
 
+if (!JWT_KEY) {
+  throw new Error("set JWT_SECRET_KEY in .env file");
+} 
+
 export const Mutation = {
-  newNote: async (_, { title, content, category }, { user, models }) => {
+  newNote: async (
+    _: never,
+    { title, content, category }:ApolloPayload,
+    { user, models }: ApolloContext
+  ) => {
     if (!user) {
       throw new AuthenticationError("User not logged in");
     }
@@ -21,12 +30,16 @@ export const Mutation = {
       author: new mongoose.Types.ObjectId(user.id),
     });
   },
-  updateNote: async (_, { id, title, content }, { user, models }) => {
+  updateNote: async (
+    _: never,
+    { id, title, content }:ApolloPayload,
+    { user, models }: ApolloContext
+  ) => {
     if (!user) {
       throw new AuthenticationError("User not logged in");
     }
     const note = await models.Note.findById(id);
-    if (note && String(note.author !== user.id)) {
+    if (note && String(note.author) !== user.id) {
       throw new ForbiddenError("You don't have permission to edit this note");
     }
     return await models.Note.findByIdAndUpdate(
@@ -42,7 +55,7 @@ export const Mutation = {
       }
     );
   },
-  deleteNote: async (_, { id }, { user, models }) => {
+  deleteNote: async (_: never, { id }:ApolloPayload, { user, models }: ApolloContext) => {
     if (!user) {
       throw new AuthenticationError("User not logged in");
     }
@@ -52,12 +65,16 @@ export const Mutation = {
     }
     return await models.Note.findByIdAndDelete(id);
   },
-  toggleFavoriteNote: async (_, { id }, { user, models }) => {
+  toggleFavoriteNote: async (
+    _: never,
+    { id }: ApolloPayload,
+    { user, models }: ApolloContext
+  ) => {
     if (!user) {
       throw new AuthenticationError("User not logged in");
     }
     const findNote = await models.Note.findById(id);
-    const hasUser = findNote.favoritedBy.includes(user.id);
+    const hasUser = findNote?.favoritedBy.find((id) => String(id) === user.id);
     if (hasUser) {
       return await models.Note.findByIdAndUpdate(
         id,
@@ -90,7 +107,11 @@ export const Mutation = {
       );
     }
   },
-  signUp: async (_, { username, email, password }, { models }) => {
+  signUp: async (
+    _: never,
+    { username, email, password }:AuthPayload,
+    { models }: ApolloContext
+  ) => {
     const hashedPass = await bcrypt.hash(password, 10);
     try {
       const user = await models.User.create({
@@ -103,7 +124,11 @@ export const Mutation = {
       throw new Error("Error registering user");
     }
   },
-  signIn: async (_, { username, email, password }, { models }) => {
+  signIn: async (
+    _: never,
+    { username, email, password }:AuthPayload,
+    { models }: ApolloContext
+  ) => {
     const user = await models.User.findOne({
       $or: [{ email }, { username }],
     });
